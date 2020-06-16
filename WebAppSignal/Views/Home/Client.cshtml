@@ -1,0 +1,46 @@
+﻿
+<h2>Count Operation</h2>
+<div id="data"></div>
+<button id="btn">Carregar</button>
+
+@section Scripts {
+  <script src="~/js/signalr.min.js"></script>
+  <script>
+    $(document).ready(function () {
+
+      const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/CountHub")
+        .configureLogging(signalR.LogLevel.Information)
+        .withAutomaticReconnect()
+        .build();
+
+      connection.on('GetClientCount', function (value) {
+        console.log(value);
+        const span = document.createElement("span");
+        var text = document.createTextNode(value);
+        span.appendChild(text);
+        const data = document.getElementById("data");
+        data.innerHTML = "";
+        data.append(span);
+      });
+
+      document.getElementById("btn")
+        .addEventListener('click', function () {
+          onReady();
+        });
+
+      function onReady() {
+        connection && connection.invoke("GetServerCount")
+          .catch(function (err) {
+            console.error(err)
+          });
+      }
+
+      connection && connection.start()
+        .then(function () {
+          onReady();
+        });
+    });
+
+  </script>
+}
