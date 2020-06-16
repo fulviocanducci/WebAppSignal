@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebAppSignal.Hubs;
+using WebAppSignal.Models;
 
 namespace WebAppSignal
 {
@@ -22,6 +19,7 @@ namespace WebAppSignal
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<DbaseContext>();
             services.AddSignalR();
             services.AddControllersWithViews();
         }
@@ -49,6 +47,7 @@ namespace WebAppSignal
                     pattern: "{controller=Home}/{action=Index}/{id?}");
 
                 endpoints.MapHub<CountHub>("/CountHub");
+                endpoints.MapHub<TodosHub>("/TodosHub");
             });
         }
     }

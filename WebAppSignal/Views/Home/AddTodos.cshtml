@@ -1,0 +1,73 @@
+﻿<div id="app">
+  <div>
+    <div>
+      <form v-on:submit.prevent="submit">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Description</label>
+          <input type="text" class="form-control" v-model="todo.description">
+          <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>       
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="todo.done">
+          <label class="form-check-label" for="exampleCheck1">Done</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+  <div>{{JSON.stringify(todo)}}</div>
+</div>
+
+@section Scripts {
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+  <script>    
+    new Vue({
+      el: "#app",
+      data: {        
+        connection: null,
+        todo: {
+          id: 0,
+          description: '',
+          done: false
+        }
+      },
+      methods: {
+        update: function () {
+          this.connection.invoke('GetServerTodo');
+        },
+        add: function (todo) {
+          this.connection.invoke('AddServerTodo', todo);
+        },
+        submit: function (e) {
+          e.preventDefault();
+          this.add(this.todo);
+          this.todo = {
+            id: 0,
+            description: '',
+            done: false
+          }
+        }
+      },
+      created: function () { },
+      mounted: function () {
+        this.connection = new signalR.HubConnectionBuilder()
+          .withUrl("/TodosHub")
+          .configureLogging(signalR.LogLevel.Information)
+          .withAutomaticReconnect()
+          .build();
+        this.connection.start()
+          .then(function () {
+            this.connection.on('AddClientTodo', function () {
+              this.update();
+            }.bind(this)); 
+            this.connection.on('GetClientTodo', function (items) { });
+            this.update();
+          }.bind(this));
+      },
+      updated: function () { },
+      destroyed: function () { }
+    });
+  </script>
+}
+

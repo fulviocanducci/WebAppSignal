@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using WebAppSignal.Hubs;
 using WebAppSignal.Models;
 
 namespace WebAppSignal.Controllers
@@ -34,9 +37,23 @@ namespace WebAppSignal.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-
         public IActionResult Client()
         {
+            return View();
+        }
+
+        [HttpGet]
+        [Route("todos")]
+        public IActionResult GetTodos()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Route("todos/add")]
+        public IActionResult AddTodos()
+        {
+            
             return View();
         }
     }
