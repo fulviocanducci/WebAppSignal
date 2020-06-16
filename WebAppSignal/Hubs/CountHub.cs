@@ -16,7 +16,7 @@ namespace WebAppSignal.Hubs
 
         public async Task<int> GetCountAsync()
         {
-            if (File.Exists("./Files/Count.txt") == false)
+            if (File.Exists(PathAndFileName) == false)
             {
                 using FileStream fileStream = File.Create(PathAndFileName);
             }
