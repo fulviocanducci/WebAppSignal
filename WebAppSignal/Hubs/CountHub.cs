@@ -26,7 +26,11 @@ namespace WebAppSignal.Hubs
                 countText = await readTxt.ReadLineAsync();
                 if (string.IsNullOrEmpty(countText)) countText = "0";
             }
-            int count = int.Parse(countText) + 1;
+            int count = 0;
+            if (int.TryParse(countText, out int _c))
+            {
+                count = 1 + _c;
+            }
             using (StreamWriter writeTxt = new StreamWriter(PathAndFileName, false))
             {
                 await writeTxt.WriteAsync($"{count}");
