@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using WebAppSignal.Hubs;
 using WebAppSignal.Models;
 
 namespace WebAppSignal.Controllers
@@ -61,7 +61,17 @@ namespace WebAppSignal.Controllers
         {
             dbaseContext.Todo.Add(new Todo { Done = true, Description = Guid.NewGuid().ToString() });
             await dbaseContext.SaveChangesAsync();
+            await GetUpdateTodosAsync();
             return View(await dbaseContext.Todo.CountAsync());
+        }
+
+        public async Task GetUpdateTodosAsync()
+        {
+            HubConnection hubConnection = new HubConnectionBuilder()
+                .WithUrl("http://localhost:55849/TodosHub").Build();
+            await hubConnection.StartAsync();
+            await hubConnection.InvokeAsync("GetServerTodo");
+            await hubConnection.DisposeAsync();
         }
     }
 }
