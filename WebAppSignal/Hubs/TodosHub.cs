@@ -8,7 +8,7 @@ namespace WebAppSignal.Hubs
 {
     public class TodosHub : Hub
     {
-        private DbaseContext Source { get; }
+        private DbaseContext Source { get; }        
         public TodosHub(DbaseContext source)
         {
             Source = source;
@@ -27,7 +27,7 @@ namespace WebAppSignal.Hubs
                 .Todo
                 .AsNoTracking()
                 .ToListAsync();
-            await Clients.All.SendAsync("GetClientTodo", todos);
+            await Clients.All.SendAsync("GetClientTodo", todos);            
         }
     }
 }

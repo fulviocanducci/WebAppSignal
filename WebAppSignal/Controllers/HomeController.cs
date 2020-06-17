@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.SignalR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using WebAppSignal.Hubs;
 using WebAppSignal.Models;
 
@@ -53,8 +50,18 @@ namespace WebAppSignal.Controllers
         [Route("todos/add")]
         public IActionResult AddTodos()
         {
-            
+
             return View();
+        }
+
+
+        [HttpGet]
+        [Route("todos/base")]
+        public async Task<IActionResult> BaseTodos([FromServices] DbaseContext dbaseContext)
+        {
+            dbaseContext.Todo.Add(new Todo { Done = true, Description = Guid.NewGuid().ToString() });
+            await dbaseContext.SaveChangesAsync();
+            return View(await dbaseContext.Todo.CountAsync());
         }
     }
 }

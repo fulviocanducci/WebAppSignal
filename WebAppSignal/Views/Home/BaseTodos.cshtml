@@ -1,0 +1,26 @@
+﻿@model System.Int32
+@{
+  ViewData["Title"] = "BaseTodos";
+}
+<h1>BaseTodos</h1>
+
+<div>Quantidade de Registro Tabela Todo: @Model</div>
+@section Scripts {
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+  <script>
+    $(document).ready(function () {
+      connection = new signalR.HubConnectionBuilder()
+        .withUrl("/TodosHub")
+        .configureLogging(signalR.LogLevel.Information)
+        .withAutomaticReconnect()
+        .build();
+      connection.on('AddClientTodo', function () { });
+      connection.on('GetClientTodo', function (values) { });
+      connection.start()
+        .then(() => {          
+          connection.invoke('GetServerTodo');
+        });
+    });
+  </script>
+}
